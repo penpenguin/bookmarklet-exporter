@@ -1,0 +1,15 @@
+{
+  "name": "bookmarklet-exporter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Build-time generator for bookmarklets that export page data (tables, links, meta/JSON-LD, custom CSS) to CSV.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0"
+  }
+}
