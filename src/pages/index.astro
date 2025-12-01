@@ -1,0 +1,18 @@
+---
+import { siteDescription, siteTitle } from '../lib/siteMeta';
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{siteTitle}</title>
+    <meta name="description" content={siteDescription} />
+  </head>
+  <body>
+    <h1>{siteTitle}</h1>
+    <p>{siteDescription}</p>
+  </body>
+</html>
