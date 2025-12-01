@@ -1,64 +1,32 @@
-import { describe, expect, test } from 'vitest';
-import {
-  buildBookmarklet,
-  type BuildOptions,
-  normalizeCode,
-} from './bookmarklet';
+import { describe, expect, it } from 'vitest';
+import { generateBookmarklet } from './bookmarklet';
 
-const baseInput = 'console.log("hi");';
-
-describe('normalizeCode', () => {
-  test('改行のみスペースに置き換える', () => {
-    const code = 'a()\r\nb()\n  c()';
-    expect(normalizeCode(code)).toBe('a() b()   c()');
+describe('generateBookmarklet', () => {
+  it('throws an error when code is empty after trim', () => {
+    expect(() => generateBookmarklet('   ')).toThrow('code is required');
   });
 
-  test('空文字はそのまま返す', () => {
-    expect(normalizeCode('')).toBe('');
-  });
-});
+  it('wraps code with IIFE and collapses newlines by default', () => {
+    const result = generateBookmarklet('console.log("a")\nconsole.log("b")');
 
-describe('buildBookmarklet', () => {
-  const defaultOptions: BuildOptions = {
-    wrapIife: false,
-    singleLine: false,
-    name: '',
-  };
-
-  test('空入力でエラーを返す', () => {
-    const result = buildBookmarklet('', defaultOptions);
-    expect(result.ok).toBe(false);
-    if (result.ok) return;
-    expect(result.error).toMatch(/コードを入力/);
+    expect(result).toBe('javascript:(function(){ console.log("a") console.log("b") })();');
   });
 
-  test('そのままプレフィックス付きで生成する', () => {
-    const result = buildBookmarklet(baseInput, defaultOptions);
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(result.bookmarklet).toBe(`javascript:${baseInput}`);
-    expect(result.linkText).toBe('Bookmarklet');
+  it('keeps newlines when collapseNewlines is false', () => {
+    const result = generateBookmarklet('alert(1);\nalert(2);', {
+      wrapIIFE: true,
+      collapseNewlines: false,
+    });
+
+    expect(result).toBe('javascript:(function(){ alert(1);\nalert(2); })();');
   });
 
-  test('IIFE でラップする', () => {
-    const result = buildBookmarklet(baseInput, { ...defaultOptions, wrapIife: true });
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(result.bookmarklet).toBe('javascript:(function(){console.log("hi");})();');
-  });
+  it('skips IIFE wrapping when wrapIIFE is false', () => {
+    const result = generateBookmarklet('alert(1);', {
+      wrapIIFE: false,
+      collapseNewlines: true,
+    });
 
-  test('改行を1行にまとめてから IIFE でラップする', () => {
-    const code = 'alert("a")\nalert("b")';
-    const result = buildBookmarklet(code, { ...defaultOptions, wrapIife: true, singleLine: true });
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(result.bookmarklet).toBe('javascript:(function(){alert("a") alert("b");})();');
-  });
-
-  test('名前があればリンクテキストに使う', () => {
-    const result = buildBookmarklet(baseInput, { ...defaultOptions, name: 'Hello' });
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(result.linkText).toBe('Hello');
+    expect(result).toBe('javascript:alert(1);');
   });
 });
