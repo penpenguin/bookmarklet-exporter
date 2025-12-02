@@ -77,4 +77,10 @@ describe('index page accessibility', () => {
     expect(tabShellPadding).toBe(true);
     expect(panelPadding).toBe(true);
   });
+
+  it('doubles the tab padding for better hit targets', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+    const tabPadding = /\.tab\s*\{[^}]*padding:\s*8px\s+14px/s.test(source);
+    expect(tabPadding).toBe(true);
+  });
 });
