@@ -142,6 +142,38 @@ import mainScriptUrl from '../scripts/main.ts?url';
         display: none;
       }
 
+      .panel-surface {
+        position: relative;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: clamp(14px, 3vw, 20px);
+        box-shadow: var(--shadow);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+
+      .panel-surface::before {
+        content: attr(data-label);
+        position: absolute;
+        top: -12px;
+        left: 14px;
+        padding: 4px 10px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, rgba(109, 213, 237, 0.28), rgba(33, 147, 176, 0.32));
+        color: #0a0f1f;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        box-shadow: 0 6px 20px rgba(33, 147, 176, 0.35);
+      }
+
+      .tab-panel[data-active='true'] .panel-surface {
+        border-color: rgba(109, 213, 237, 0.55);
+        background: rgba(109, 213, 237, 0.04);
+        box-shadow: 0 18px 48px rgba(33, 147, 176, 0.28);
+      }
+
       label {
         font-weight: 600;
         display: block;
@@ -384,57 +416,60 @@ import mainScriptUrl from '../scripts/main.ts?url';
             role="tabpanel"
             aria-labelledby="tab-tools"
             data-tab-panel="tools"
+            data-active="true"
           >
-            <section class="card layout-grid" aria-label="ブックマークレット生成フォーム">
-              <div>
-                <label for="name-input">ブックマーク名（任意）</label>
-                <input
-                  id="name-input"
-                  name="name"
-                  type="text"
-                  placeholder="例: Text Highlighter"
-                  autocomplete="off"
-                />
-              </div>
-
-              <div>
-                <label for="code-fallback">JavaScript コード</label>
-                <p class="note">信頼できるコードだけを貼り付けてください。不要な改行はオプションでまとめられます。</p>
-                <div class="editor-shell" aria-live="polite">
-                  <div id="editor" class="editor" role="presentation"></div>
-                  <textarea
-                    id="code-fallback"
-                    name="code"
-                    class="fallback"
-                    aria-label="JavaScriptコード（テキストエリアのフォールバック）"
-                    spellcheck="false"
-                  ></textarea>
+            <div class="panel-surface" data-label="ツール">
+              <section class="card layout-grid" aria-label="ブックマークレット生成フォーム">
+                <div>
+                  <label for="name-input">ブックマーク名（任意）</label>
+                  <input
+                    id="name-input"
+                    name="name"
+                    type="text"
+                    placeholder="例: Text Highlighter"
+                    autocomplete="off"
+                  />
                 </div>
-              </div>
 
-              <div class="options" aria-label="変換オプション">
-                <label class="option" for="wrap-iife">
-                  <input id="wrap-iife" type="checkbox" checked />
-                  <span>即時関数でラップする</span>
-                </label>
-                <label class="option" for="collapse-lines">
-                  <input id="collapse-lines" type="checkbox" checked />
-                  <span>改行を 1 行にまとめる</span>
-                </label>
-              </div>
+                <div>
+                  <label for="code-fallback">JavaScript コード</label>
+                  <p class="note">信頼できるコードだけを貼り付けてください。不要な改行はオプションでまとめられます。</p>
+                  <div class="editor-shell" aria-live="polite">
+                    <div id="editor" class="editor" role="presentation"></div>
+                    <textarea
+                      id="code-fallback"
+                      name="code"
+                      class="fallback"
+                      aria-label="JavaScriptコード（テキストエリアのフォールバック）"
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </div>
 
-              <div class="actions">
-                <button id="convert-btn" class="primary" type="button">変換する</button>
-                <button id="copy-btn" class="secondary" type="button">生成結果をコピー</button>
-              </div>
+                <div class="options" aria-label="変換オプション">
+                  <label class="option" for="wrap-iife">
+                    <input id="wrap-iife" type="checkbox" checked />
+                    <span>即時関数でラップする</span>
+                  </label>
+                  <label class="option" for="collapse-lines">
+                    <input id="collapse-lines" type="checkbox" checked />
+                    <span>改行を 1 行にまとめる</span>
+                  </label>
+                </div>
 
-              <div class="output-area">
-                <label for="output">生成された bookmarklet URL</label>
-                <textarea id="output" class="output" readonly placeholder="javascript:(function(){ ... })();"></textarea>
-                <a id="bookmark-link" class="bookmark-link" href="#" draggable="true">ブックマークレット</a>
-                <div id="message" class="message" role="status" aria-live="polite"></div>
-              </div>
-            </section>
+                <div class="actions">
+                  <button id="convert-btn" class="primary" type="button">変換する</button>
+                  <button id="copy-btn" class="secondary" type="button">生成結果をコピー</button>
+                </div>
+
+                <div class="output-area">
+                  <label for="output">生成された bookmarklet URL</label>
+                  <textarea id="output" class="output" readonly placeholder="javascript:(function(){ ... })();"></textarea>
+                  <a id="bookmark-link" class="bookmark-link" href="#" draggable="true">ブックマークレット</a>
+                  <div id="message" class="message" role="status" aria-live="polite"></div>
+                </div>
+              </section>
+            </div>
           </div>
 
           <div
@@ -443,32 +478,35 @@ import mainScriptUrl from '../scripts/main.ts?url';
             role="tabpanel"
             aria-labelledby="tab-guide"
             data-tab-panel="guide"
+            data-active="false"
             hidden
           >
-            <section class="howto two-col">
-              <div class="card pill-list">
-                <h2>使い方</h2>
-                <div class="pill">1) コードをエディターに貼り付け、オプションを必要に応じて変更します。</div>
-                <div class="pill">2) 「変換する」を押して URL とドラッグ用リンクを生成します。</div>
-                <div class="pill">3) ブラウザのブックマークバーへリンクをドラッグするか、コピーした URL を登録します。</div>
-                <div class="pill">4) 動作確認し、問題があればコードを修正して再生成します。</div>
-              </div>
+            <div class="panel-surface" data-label="説明">
+              <section class="howto two-col">
+                <div class="card pill-list">
+                  <h2>使い方</h2>
+                  <div class="pill">1) コードをエディターに貼り付け、オプションを必要に応じて変更します。</div>
+                  <div class="pill">2) 「変換する」を押して URL とドラッグ用リンクを生成します。</div>
+                  <div class="pill">3) ブラウザのブックマークバーへリンクをドラッグするか、コピーした URL を登録します。</div>
+                  <div class="pill">4) 動作確認し、問題があればコードを修正して再生成します。</div>
+                </div>
 
-              <div class="card pill-list">
-                <h2>スマホ登録のヒント</h2>
-                <div class="pill">・生成結果をコピーし、ホーム画面に追加するショートカットや共有シートから登録します。</div>
-                <div class="pill">・iOS Safari: 「共有」→「ブックマーク」→ 編集で URL を貼り替えると登録できます。</div>
-                <div class="pill">・Android Chrome: ブックマークを作成後、編集画面で URL を bookmarklet に置き換えます。</div>
-                <div class="pill">・URL が長い場合は IIFE を外したり、コードを圧縮して長さを抑えてください。</div>
-              </div>
-            </section>
+                <div class="card pill-list">
+                  <h2>スマホ登録のヒント</h2>
+                  <div class="pill">・生成結果をコピーし、ホーム画面に追加するショートカットや共有シートから登録します。</div>
+                  <div class="pill">・iOS Safari: 「共有」→「ブックマーク」→ 編集で URL を貼り替えると登録できます。</div>
+                  <div class="pill">・Android Chrome: ブックマークを作成後、編集画面で URL を bookmarklet に置き換えます。</div>
+                  <div class="pill">・URL が長い場合は IIFE を外したり、コードを圧縮して長さを抑えてください。</div>
+                </div>
+              </section>
 
-            <section class="howto card pill-list" aria-label="注意事項">
-              <h2>安全面の注意</h2>
-              <div class="pill">・必ず信頼できるコードのみを使用してください。未知のコードは個人情報流出の原因になります。</div>
-              <div class="pill">・生成された URL はプレーンテキストです。公開リポジトリや共有時は内容を確認してください。</div>
-              <div class="pill">・ブラウザや拡張機能が `javascript:` スキームをブロックする場合があります。</div>
-            </section>
+              <section class="howto card pill-list" aria-label="注意事項">
+                <h2>安全面の注意</h2>
+                <div class="pill">・必ず信頼できるコードのみを使用してください。未知のコードは個人情報流出の原因になります。</div>
+                <div class="pill">・生成された URL はプレーンテキストです。公開リポジトリや共有時は内容を確認してください。</div>
+                <div class="pill">・ブラウザや拡張機能が `javascript:` スキームをブロックする場合があります。</div>
+              </section>
+            </div>
           </div>
         </div>
       </div>

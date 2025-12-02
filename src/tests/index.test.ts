@@ -60,4 +60,18 @@ describe('index page accessibility', () => {
     const source = readFileSync('src/pages/index.astro', 'utf-8');
     expect(source.includes('1 ページで')).toBe(false);
   });
+
+  it('shows a labeled panel frame so the active tab scope is obvious', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+
+    const toolsLabel = /class="[^"]*panel-surface[^"]*"[^>]*data-label="ツール"/.test(source);
+    const guideLabel = /class="[^"]*panel-surface[^"]*"[^>]*data-label="説明"/.test(source);
+    expect(toolsLabel).toBe(true);
+    expect(guideLabel).toBe(true);
+
+    const toolsActive = /id="tools-panel"[^>]*data-active="true"/.test(source);
+    const guideInactive = /id="guide-panel"[^>]*data-active="false"/.test(source);
+    expect(toolsActive).toBe(true);
+    expect(guideInactive).toBe(true);
+  });
 });

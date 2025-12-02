@@ -35,6 +35,7 @@ const activateTab = (target: string) => {
 
   tabPanels.forEach((panel) => {
     const isActive = panel.dataset.tabPanel === target;
+    panel.dataset.active = String(isActive);
     if (isActive) {
       panel.removeAttribute('hidden');
     } else {
