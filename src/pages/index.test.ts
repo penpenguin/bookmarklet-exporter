@@ -55,4 +55,9 @@ describe('index page accessibility', () => {
     const source = readFileSync('src/pages/index.astro', 'utf-8');
     expect(source.includes('BOOKMARKLET TOOL')).toBe(false);
   });
+
+  it('does not include the phrase "1 ページで" in the hero title', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+    expect(source.includes('1 ページで')).toBe(false);
+  });
 });
