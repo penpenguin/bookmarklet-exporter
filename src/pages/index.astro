@@ -96,6 +96,63 @@ import mainScriptUrl from '../scripts/main.ts?url';
         gap: 14px;
       }
 
+      .tabs {
+        display: grid;
+        gap: 12px;
+      }
+
+      .tab-list {
+        display: inline-flex;
+        align-items: stretch;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 6px;
+        width: fit-content;
+        box-shadow: var(--shadow);
+      }
+
+      .tab {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 700;
+        padding: 10px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+      }
+
+      .tab[aria-selected='true'] {
+        background: linear-gradient(135deg, rgba(109, 213, 237, 0.18), rgba(33, 147, 176, 0.2));
+        color: var(--text);
+        box-shadow: 0 8px 24px rgba(33, 147, 176, 0.25);
+      }
+
+      .tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .tab:hover {
+        transform: translateY(-1px);
+      }
+
+      .tab-panels {
+        display: grid;
+        gap: 14px;
+      }
+
+      .tab-panel {
+        display: grid;
+        gap: 14px;
+      }
+
+      .tab-panel[hidden] {
+        display: none;
+      }
+
       label {
         font-weight: 600;
         display: block;
@@ -298,9 +355,21 @@ import mainScriptUrl from '../scripts/main.ts?url';
           width: 100%;
         }
       }
+
+      .no-js .tab-list {
+        display: none;
+      }
+
+      .no-js .tab-panels {
+        gap: 18px;
+      }
+
+      .no-js .tab-panel {
+        display: grid !important;
+      }
     </style>
   </head>
-  <body>
+  <body class="no-js">
     <main>
       <header class="hero">
         <span class="eyebrow">BOOKMARKLET TOOL</span>
@@ -310,81 +379,111 @@ import mainScriptUrl from '../scripts/main.ts?url';
         </p>
       </header>
 
-      <section class="card layout-grid" aria-label="ブックマークレット生成フォーム">
-        <div>
-          <label for="name-input">ブックマーク名（任意）</label>
-          <input
-            id="name-input"
-            name="name"
-            type="text"
-            placeholder="例: Text Highlighter"
-            autocomplete="off"
-          />
+      <div class="tabs">
+        <div class="tab-list" role="tablist" aria-label="コンテンツ切り替え">
+          <button id="tab-tools" class="tab" role="tab" aria-selected="true" aria-controls="tools-panel" tabindex="0" data-tab-target="tools">
+            ツール
+          </button>
+          <button id="tab-guide" class="tab" role="tab" aria-selected="false" aria-controls="guide-panel" tabindex="-1" data-tab-target="guide">
+            説明
+          </button>
         </div>
 
-        <div>
-          <label for="code-fallback">JavaScript コード</label>
-          <p class="note">信頼できるコードだけを貼り付けてください。不要な改行はオプションでまとめられます。</p>
-          <div class="editor-shell" aria-live="polite">
-            <div id="editor" class="editor" role="presentation"></div>
-            <textarea
-              id="code-fallback"
-              name="code"
-              class="fallback"
-              aria-label="JavaScriptコード（テキストエリアのフォールバック）"
-              spellcheck="false"
-            ></textarea>
+        <div class="tab-panels">
+          <div
+            id="tools-panel"
+            class="tab-panel"
+            role="tabpanel"
+            aria-labelledby="tab-tools"
+            data-tab-panel="tools"
+          >
+            <section class="card layout-grid" aria-label="ブックマークレット生成フォーム">
+              <div>
+                <label for="name-input">ブックマーク名（任意）</label>
+                <input
+                  id="name-input"
+                  name="name"
+                  type="text"
+                  placeholder="例: Text Highlighter"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div>
+                <label for="code-fallback">JavaScript コード</label>
+                <p class="note">信頼できるコードだけを貼り付けてください。不要な改行はオプションでまとめられます。</p>
+                <div class="editor-shell" aria-live="polite">
+                  <div id="editor" class="editor" role="presentation"></div>
+                  <textarea
+                    id="code-fallback"
+                    name="code"
+                    class="fallback"
+                    aria-label="JavaScriptコード（テキストエリアのフォールバック）"
+                    spellcheck="false"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="options" aria-label="変換オプション">
+                <label class="option" for="wrap-iife">
+                  <input id="wrap-iife" type="checkbox" checked />
+                  <span>即時関数でラップする</span>
+                </label>
+                <label class="option" for="collapse-lines">
+                  <input id="collapse-lines" type="checkbox" checked />
+                  <span>改行を 1 行にまとめる</span>
+                </label>
+              </div>
+
+              <div class="actions">
+                <button id="convert-btn" class="primary" type="button">変換する</button>
+                <button id="copy-btn" class="secondary" type="button">生成結果をコピー</button>
+              </div>
+
+              <div class="output-area">
+                <label for="output">生成された bookmarklet URL</label>
+                <textarea id="output" class="output" readonly placeholder="javascript:(function(){ ... })();"></textarea>
+                <a id="bookmark-link" class="bookmark-link" href="#" draggable="true">ブックマークレット</a>
+                <div id="message" class="message" role="status" aria-live="polite"></div>
+              </div>
+            </section>
+          </div>
+
+          <div
+            id="guide-panel"
+            class="tab-panel"
+            role="tabpanel"
+            aria-labelledby="tab-guide"
+            data-tab-panel="guide"
+            hidden
+          >
+            <section class="howto two-col">
+              <div class="card pill-list">
+                <h2>使い方</h2>
+                <div class="pill">1) コードをエディターに貼り付け、オプションを必要に応じて変更します。</div>
+                <div class="pill">2) 「変換する」を押して URL とドラッグ用リンクを生成します。</div>
+                <div class="pill">3) ブラウザのブックマークバーへリンクをドラッグするか、コピーした URL を登録します。</div>
+                <div class="pill">4) 動作確認し、問題があればコードを修正して再生成します。</div>
+              </div>
+
+              <div class="card pill-list">
+                <h2>スマホ登録のヒント</h2>
+                <div class="pill">・生成結果をコピーし、ホーム画面に追加するショートカットや共有シートから登録します。</div>
+                <div class="pill">・iOS Safari: 「共有」→「ブックマーク」→ 編集で URL を貼り替えると登録できます。</div>
+                <div class="pill">・Android Chrome: ブックマークを作成後、編集画面で URL を bookmarklet に置き換えます。</div>
+                <div class="pill">・URL が長い場合は IIFE を外したり、コードを圧縮して長さを抑えてください。</div>
+              </div>
+            </section>
+
+            <section class="howto card pill-list" aria-label="注意事項">
+              <h2>安全面の注意</h2>
+              <div class="pill">・必ず信頼できるコードのみを使用してください。未知のコードは個人情報流出の原因になります。</div>
+              <div class="pill">・生成された URL はプレーンテキストです。公開リポジトリや共有時は内容を確認してください。</div>
+              <div class="pill">・ブラウザや拡張機能が `javascript:` スキームをブロックする場合があります。</div>
+            </section>
           </div>
         </div>
-
-        <div class="options" aria-label="変換オプション">
-          <label class="option" for="wrap-iife">
-            <input id="wrap-iife" type="checkbox" checked />
-            <span>即時関数でラップする</span>
-          </label>
-          <label class="option" for="collapse-lines">
-            <input id="collapse-lines" type="checkbox" checked />
-            <span>改行を 1 行にまとめる</span>
-          </label>
-        </div>
-
-        <div class="actions">
-          <button id="convert-btn" class="primary" type="button">変換する</button>
-          <button id="copy-btn" class="secondary" type="button">生成結果をコピー</button>
-        </div>
-
-        <div class="output-area">
-          <label for="output">生成された bookmarklet URL</label>
-          <textarea id="output" class="output" readonly placeholder="javascript:(function(){ ... })();"></textarea>
-          <a id="bookmark-link" class="bookmark-link" href="#" draggable="true">ブックマークレット</a>
-          <div id="message" class="message" role="status" aria-live="polite"></div>
-        </div>
-      </section>
-
-      <section class="howto two-col">
-        <div class="card pill-list">
-          <h2>使い方</h2>
-          <div class="pill">1) コードをエディターに貼り付け、オプションを必要に応じて変更します。</div>
-          <div class="pill">2) 「変換する」を押して URL とドラッグ用リンクを生成します。</div>
-          <div class="pill">3) ブラウザのブックマークバーへリンクをドラッグするか、コピーした URL を登録します。</div>
-          <div class="pill">4) 動作確認し、問題があればコードを修正して再生成します。</div>
-        </div>
-
-        <div class="card pill-list">
-          <h2>スマホ登録のヒント</h2>
-          <div class="pill">・生成結果をコピーし、ホーム画面に追加するショートカットや共有シートから登録します。</div>
-          <div class="pill">・iOS Safari: 「共有」→「ブックマーク」→ 編集で URL を貼り替えると登録できます。</div>
-          <div class="pill">・Android Chrome: ブックマークを作成後、編集画面で URL を bookmarklet に置き換えます。</div>
-          <div class="pill">・URL が長い場合は IIFE を外したり、コードを圧縮して長さを抑えてください。</div>
-        </div>
-      </section>
-
-      <section class="howto card pill-list" aria-label="注意事項">
-        <h2>安全面の注意</h2>
-        <div class="pill">・必ず信頼できるコードのみを使用してください。未知のコードは個人情報流出の原因になります。</div>
-        <div class="pill">・生成された URL はプレーンテキストです。公開リポジトリや共有時は内容を確認してください。</div>
-        <div class="pill">・ブラウザや拡張機能が `javascript:` スキームをブロックする場合があります。</div>
-      </section>
+      </div>
     </main>
 
     <script type="module" src={mainScriptUrl}></script>

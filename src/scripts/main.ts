@@ -21,8 +21,51 @@ const message = document.getElementById('message');
 const bookmarkLink = document.getElementById('bookmark-link') as HTMLAnchorElement | null;
 const convertBtn = document.getElementById('convert-btn');
 const copyBtn = document.getElementById('copy-btn');
+const tabButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tab-target]'));
+const tabPanels = Array.from(document.querySelectorAll<HTMLElement>('[data-tab-panel]'));
 
 let monacoEditor: MonacoEditor.IStandaloneCodeEditor | null = null;
+
+const activateTab = (target: string) => {
+  tabButtons.forEach((button) => {
+    const isActive = button.dataset.tabTarget === target;
+    button.setAttribute('aria-selected', String(isActive));
+    button.tabIndex = isActive ? 0 : -1;
+  });
+
+  tabPanels.forEach((panel) => {
+    const isActive = panel.dataset.tabPanel === target;
+    if (isActive) {
+      panel.removeAttribute('hidden');
+    } else {
+      panel.setAttribute('hidden', '');
+    }
+  });
+};
+
+const initTabs = () => {
+  if (tabButtons.length === 0 || tabPanels.length === 0) return;
+  activateTab('tools');
+
+  tabButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const target = button.dataset.tabTarget;
+      if (target) activateTab(target);
+    });
+
+    button.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+
+      event.preventDefault();
+      const currentIndex = tabButtons.indexOf(button);
+      const direction = event.key === 'ArrowRight' ? 1 : -1;
+      const nextIndex = (currentIndex + direction + tabButtons.length) % tabButtons.length;
+      tabButtons[nextIndex].focus();
+      const target = tabButtons[nextIndex].dataset.tabTarget;
+      if (target) activateTab(target);
+    });
+  });
+};
 
 const setMessage = (text: string, state: 'success' | 'error' | 'info' = 'info') => {
   if (!message) return;
@@ -132,6 +175,9 @@ const copyResult = async () => {
 
 initEditor();
 applyNameToLink();
+initTabs();
+document.body.classList.remove('no-js');
+document.body.classList.add('js');
 
 convertBtn?.addEventListener('click', convert);
 copyBtn?.addEventListener('click', copyResult);

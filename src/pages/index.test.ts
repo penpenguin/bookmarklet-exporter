@@ -34,4 +34,20 @@ describe('index page accessibility', () => {
     const autocomplete = inputMatch?.[0].match(/autocomplete="([^"]*)"/)?.[1];
     expect(autocomplete).toBe('off');
   });
+
+  it('renders tabs to switch between the tool and explanations with the tool active by default', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+
+    const toolTab = source.match(/<button[^>]*id="tab-tools"[^>]*role="tab"[^>]*>[^<]*ツール[^<]*<\/button>/);
+    const guideTab = source.match(/<button[^>]*id="tab-guide"[^>]*role="tab"[^>]*>[^<]*説明[^<]*<\/button>/);
+
+    expect(toolTab).not.toBeNull();
+    expect(guideTab).not.toBeNull();
+
+    const toolSelected = /<button[^>]*id="tab-tools"[^>]*aria-selected="true"/.test(source);
+    expect(toolSelected).toBe(true);
+
+    const guideHidden = /<div[^>]*id="guide-panel"[^>]*hidden/.test(source);
+    expect(guideHidden).toBe(true);
+  });
 });
