@@ -1,5 +1,6 @@
 import type { editor as MonacoEditor } from 'monaco-editor';
 import { generateBookmarklet } from '../lib/bookmarklet';
+import { ensureMonacoTextareaIdentifiers } from './editorA11y';
 
 const sampleCode = `const selected = window.getSelection()?.toString();
 if (selected) {
@@ -57,6 +58,13 @@ const initEditor = async () => {
       minimap: { enabled: false },
       fontSize: 14,
       automaticLayout: true,
+      ariaLabel: 'JavaScriptコード',
+    });
+
+    // Ensure the hidden textarea Monaco uses for input has stable identifiers for autofill tools.
+    ensureMonacoTextareaIdentifiers(editorContainer, {
+      name: 'code',
+      id: 'monaco-code-input',
     });
   } catch (error) {
     editorContainer.style.display = 'none';

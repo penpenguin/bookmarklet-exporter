@@ -1,0 +1,37 @@
+import { readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+
+describe('index page accessibility', () => {
+  it('associates the JavaScript code label with a real form control', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+    const labelMatch = source.match(/<label[^>]*for="([^"]+)"[^>]*>JavaScript コード<\/label>/);
+
+    expect(labelMatch?.[1]).toBe('code-fallback');
+
+    const controlId = labelMatch?.[1] ?? '';
+    const hasInput = new RegExp(`<input[^>]*id="${controlId}"`, 'm').test(source);
+    const hasTextarea = new RegExp(`<textarea[^>]*id="${controlId}"`, 'm').test(source);
+
+    expect(hasInput || hasTextarea).toBe(true);
+  });
+
+  it('gives the fallback textarea a name attribute for autofill compatibility', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+    const fallbackMatch = source.match(/<textarea[^>]*id="code-fallback"[^>]*>/);
+
+    expect(fallbackMatch).not.toBeNull();
+
+    const nameAttr = fallbackMatch?.[0].match(/name="([^"]*)"/)?.[1];
+    expect(nameAttr).toBe('code');
+  });
+
+  it('sets autocomplete on the bookmark name input to avoid unwanted autofill', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+    const inputMatch = source.match(/<input[^>]*id="name-input"[^>]*>/);
+
+    expect(inputMatch).not.toBeNull();
+
+    const autocomplete = inputMatch?.[0].match(/autocomplete="([^"]*)"/)?.[1];
+    expect(autocomplete).toBe('off');
+  });
+});

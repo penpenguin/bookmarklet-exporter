@@ -313,16 +313,23 @@ import mainScriptUrl from '../scripts/main.ts?url';
       <section class="card layout-grid" aria-label="ブックマークレット生成フォーム">
         <div>
           <label for="name-input">ブックマーク名（任意）</label>
-          <input id="name-input" name="name" type="text" placeholder="例: Text Highlighter" />
+          <input
+            id="name-input"
+            name="name"
+            type="text"
+            placeholder="例: Text Highlighter"
+            autocomplete="off"
+          />
         </div>
 
         <div>
-          <label for="editor">JavaScript コード</label>
+          <label for="code-fallback">JavaScript コード</label>
           <p class="note">信頼できるコードだけを貼り付けてください。不要な改行はオプションでまとめられます。</p>
           <div class="editor-shell" aria-live="polite">
             <div id="editor" class="editor" role="presentation"></div>
             <textarea
               id="code-fallback"
+              name="code"
               class="fallback"
               aria-label="JavaScriptコード（テキストエリアのフォールバック）"
               spellcheck="false"
