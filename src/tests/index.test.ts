@@ -60,4 +60,21 @@ describe('index page accessibility', () => {
     const source = readFileSync('src/pages/index.astro', 'utf-8');
     expect(source.includes('1 ページで')).toBe(false);
   });
+
+  it('keeps tab ribbon and panel padding in sync via shared CSS vars', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+    const hasVarV = /--panel-pad-v:\s*clamp\(/.test(source);
+    const hasVarH = /--panel-pad-h:\s*clamp\(/.test(source);
+    expect(hasVarV && hasVarH).toBe(true);
+
+    const tabShellPadding = /\.tab-shell\s*\{[^}]*padding:\s*var\(--panel-pad-v\) var\(--panel-pad-h\) 0 var\(--panel-pad-h\)/s.test(
+      source,
+    );
+    const panelPadding = /\.panel-surface\s*\{[^}]*padding:\s*var\(--panel-pad-v\) var\(--panel-pad-h\) var\(--panel-pad-v\) var\(--panel-pad-h\)/s.test(
+      source,
+    );
+
+    expect(tabShellPadding).toBe(true);
+    expect(panelPadding).toBe(true);
+  });
 });

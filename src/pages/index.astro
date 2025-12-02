@@ -28,6 +28,8 @@ import mainScriptUrl from '../scripts/main.ts?url';
         --error: #ff6b6b;
         --success: #2ed573;
         --shadow: 0 30px 80px rgba(6, 10, 24, 0.55);
+        --panel-pad-v: clamp(12px, 2.4vw, 16px);
+        --panel-pad-h: clamp(14px, 3vw, 18px);
       }
 
       * {
@@ -95,7 +97,7 @@ import mainScriptUrl from '../scripts/main.ts?url';
         border: 1px solid var(--border);
         border-radius: 18px;
         box-shadow: 0 12px 32px rgba(33, 147, 176, 0.18);
-        padding: 10px;
+        padding: var(--panel-pad-v) var(--panel-pad-h) 0 var(--panel-pad-h);
         display: grid;
         gap: 10px;
       }
@@ -138,7 +140,7 @@ import mainScriptUrl from '../scripts/main.ts?url';
 
       .tab-panels {
         display: grid;
-        gap: 12px;
+        gap: 10px;
       }
 
       .tab-panel {
@@ -154,7 +156,7 @@ import mainScriptUrl from '../scripts/main.ts?url';
         position: relative;
         background: rgba(255, 255, 255, 0.03);
         border-radius: 12px;
-        padding: clamp(12px, 2.4vw, 16px) clamp(14px, 3vw, 18px) clamp(16px, 3vw, 20px);
+        padding: var(--panel-pad-v) var(--panel-pad-h) var(--panel-pad-v) var(--panel-pad-h);
         box-shadow: var(--shadow);
         transition: box-shadow 0.2s ease, background 0.2s ease;
       }
