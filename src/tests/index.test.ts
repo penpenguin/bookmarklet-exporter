@@ -67,7 +67,7 @@ describe('index page accessibility', () => {
     const hasVarH = /--panel-pad-h:\s*clamp\(/.test(source);
     expect(hasVarV && hasVarH).toBe(true);
 
-    const tabShellPadding = /\.tab-shell\s*\{[^}]*padding:\s*var\(--panel-pad-v\) var\(--panel-pad-h\) 0 var\(--panel-pad-h\)/s.test(
+    const tabShellPadding = /\.tab-shell\s*\{[^}]*padding:\s*var\(--panel-pad-v\) var\(--panel-pad-h\) var\(--panel-pad-v\) var\(--panel-pad-h\)/s.test(
       source,
     );
     const panelPadding = /\.panel-surface\s*\{[^}]*padding:\s*var\(--panel-pad-v\) var\(--panel-pad-h\) var\(--panel-pad-v\) var\(--panel-pad-h\)/s.test(
