@@ -154,22 +154,6 @@ import mainScriptUrl from '../scripts/main.ts?url';
         margin-top: -2px;
       }
 
-      .panel-surface::before {
-        content: attr(data-label);
-        position: absolute;
-        top: -18px;
-        left: 16px;
-        padding: 5px 12px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, rgba(109, 213, 237, 0.32), rgba(33, 147, 176, 0.38));
-        color: #082032;
-        font-weight: 700;
-        font-size: 12px;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        box-shadow: 0 10px 26px rgba(33, 147, 176, 0.38);
-      }
-
       .tab-panel[data-active='true'] .panel-surface {
         border-color: rgba(109, 213, 237, 0.65);
         background: linear-gradient(180deg, rgba(109, 213, 237, 0.06), rgba(33, 147, 176, 0.04));
@@ -420,7 +404,7 @@ import mainScriptUrl from '../scripts/main.ts?url';
             data-tab-panel="tools"
             data-active="true"
           >
-            <div class="panel-surface" data-label="ツール">
+            <div class="panel-surface">
               <section class="card layout-grid" aria-label="ブックマークレット生成フォーム">
                 <div>
                   <label for="name-input">ブックマーク名（任意）</label>
@@ -483,7 +467,7 @@ import mainScriptUrl from '../scripts/main.ts?url';
             data-active="false"
             hidden
           >
-            <div class="panel-surface" data-label="説明">
+            <div class="panel-surface">
               <section class="howto two-col">
                 <div class="card pill-list">
                   <h2>使い方</h2>
