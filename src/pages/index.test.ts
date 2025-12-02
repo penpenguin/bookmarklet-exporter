@@ -50,4 +50,9 @@ describe('index page accessibility', () => {
     const guideHidden = /<div[^>]*id="guide-panel"[^>]*hidden/.test(source);
     expect(guideHidden).toBe(true);
   });
+
+  it('does not render the hero eyebrow label', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+    expect(source.includes('BOOKMARKLET TOOL')).toBe(false);
+  });
 });
