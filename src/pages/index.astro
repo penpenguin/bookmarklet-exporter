@@ -28,8 +28,8 @@ import mainScriptUrl from '../scripts/main.ts?url';
         --error: #ff6b6b;
         --success: #2ed573;
         --shadow: 0 30px 80px rgba(6, 10, 24, 0.55);
-        --panel-pad-v: clamp(12px, 2.4vw, 16px);
-        --panel-pad-h: clamp(14px, 3vw, 18px);
+        --panel-pad-v: clamp(10px, 2vw, 14px);
+        --panel-pad-h: clamp(12px, 2.6vw, 16px);
       }
 
       * {
@@ -105,7 +105,7 @@ import mainScriptUrl from '../scripts/main.ts?url';
       .tab-list {
         display: flex;
         align-items: stretch;
-        gap: 8px;
+        gap: 6px;
         padding: var(--panel-pad-v) var(--panel-pad-h);
         border-radius: 12px;
         background: rgba(255, 255, 255, 0.04);
@@ -117,7 +117,7 @@ import mainScriptUrl from '../scripts/main.ts?url';
         background: transparent;
         color: var(--muted);
         font-weight: 700;
-        padding: 8px 12px;
+        padding: 7px 10px;
         border-radius: 10px;
         cursor: pointer;
         transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
