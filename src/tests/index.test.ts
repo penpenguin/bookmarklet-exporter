@@ -101,16 +101,22 @@ describe('index page accessibility', () => {
     expect(buildsHref).toBe(true);
   });
 
-  it('loads the page script via a built JS asset resolved from the module URL (not a raw TypeScript url)', () => {
+  it('imports the client script URL via Vite ?url so the built asset respects the base path', () => {
     const source = readFileSync('src/pages/index.astro', 'utf-8');
 
-    const includesUrlQuery = /\?url['"]/g.test(source);
-    expect(includesUrlQuery).toBe(false);
-
-    const declaresUrl = /new URL\(['"]\.\.\/scripts\/main\.ts['"],\s*import\.meta\.url\)/.test(source);
-    expect(declaresUrl).toBe(true);
+    const importsUrl = /import\s+mainScriptUrl\s+from\s+['"]\.\.\/scripts\/main\.ts\?url['"];?/s.test(source);
+    expect(importsUrl).toBe(true);
 
     const scriptUsesUrl = /<script[^>]*type="module"[^>]*src=\{[^}]*mainScriptUrl[^}]*\}[^>]*><\/script>/s.test(source);
     expect(scriptUsesUrl).toBe(true);
+
+    const avoidsPathname = /\.pathname/.test(source) === false;
+    expect(avoidsPathname).toBe(true);
+
+    const avoidsAstroResolve = /Astro\.resolve/.test(source) === false;
+    expect(avoidsAstroResolve).toBe(true);
+
+    const avoidsInlineImport = /<script[^>]*type="module"[^>]*>[^<]*import\s+['"]\.\.\/scripts\/main\.ts['"];/s.test(source) === false;
+    expect(avoidsInlineImport).toBe(true);
   });
 });
