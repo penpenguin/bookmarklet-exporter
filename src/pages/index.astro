@@ -1,0 +1,516 @@
+---
+import { siteDescription, siteTitle } from '../lib/siteMeta';
+
+const mainScriptUrl = new URL('../scripts/main.ts', import.meta.url).pathname;
+const base = import.meta.env.BASE_URL ?? '/';
+const trimmedBase = base === '/' ? '' : base.replace(/\/$/, '');
+const faviconUrl = `${trimmedBase}/favicon.svg`;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href={faviconUrl} />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{siteTitle}</title>
+    <meta name="description" content={siteDescription} />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Noto+Sans+JP:wght@400;600&display=swap"
+    />
+    <style>
+      :root {
+        --bg: #0b1020;
+        --card: rgba(16, 21, 40, 0.78);
+        --text: #e9ecf5;
+        --muted: #9fb1d3;
+        --accent: #6dd5ed;
+        --accent-strong: #2193b0;
+        --border: rgba(255, 255, 255, 0.08);
+        --error: #ff6b6b;
+        --success: #2ed573;
+        --shadow: 0 30px 80px rgba(6, 10, 24, 0.55);
+        --panel-pad-v: clamp(5px, 1vw, 8px);
+        --panel-pad-h: clamp(7px, 1.6vw, 11px);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: 'Manrope', 'Noto Sans JP', system-ui, -apple-system, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at 20% 20%, rgba(77, 134, 255, 0.18), transparent 25%),
+          radial-gradient(circle at 80% 10%, rgba(109, 213, 237, 0.24), transparent 28%),
+          radial-gradient(circle at 50% 80%, rgba(54, 209, 220, 0.22), transparent 32%),
+          var(--bg);
+        padding: 24px 16px 40px;
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .hero {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(28px, 5vw, 36px);
+        letter-spacing: -0.01em;
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 720px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: clamp(16px, 3vw, 22px);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .layout-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .tabs {
+        display: grid;
+        gap: 0;
+      }
+
+      .tab-shell {
+        background: linear-gradient(135deg, rgba(109, 213, 237, 0.08), rgba(33, 147, 176, 0.06));
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: 0 12px 32px rgba(33, 147, 176, 0.18);
+        padding: var(--panel-pad-v) var(--panel-pad-h);
+        display: grid;
+        gap: var(--panel-pad-v);
+      }
+
+      .tab-list {
+        display: flex;
+        align-items: stretch;
+        gap: 3px;
+        padding: var(--panel-pad-v) var(--panel-pad-h);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      }
+
+      .tab {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 700;
+        padding: 8px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+      }
+
+      .tab[aria-selected='true'] {
+        background: linear-gradient(135deg, rgba(109, 213, 237, 0.18), rgba(33, 147, 176, 0.2));
+        color: var(--text);
+        box-shadow: 0 8px 24px rgba(33, 147, 176, 0.25);
+      }
+
+      .tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .tab:hover {
+        transform: translateY(-1px);
+      }
+
+      .tab-panels {
+        display: grid;
+        gap: 8px;
+        border-radius: 12px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      }
+
+      .tab-panel {
+        display: grid;
+        gap: 14px;
+      }
+
+      .tab-panel[hidden] {
+        display: none;
+      }
+
+      .panel-surface {
+        position: relative;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: var(--panel-pad-v) var(--panel-pad-h) var(--panel-pad-v) var(--panel-pad-h);
+        box-shadow: var(--shadow);
+        transition: box-shadow 0.2s ease, background 0.2s ease;
+      }
+
+      .tab-panel[data-active='true'] .panel-surface {
+        background: linear-gradient(180deg, rgba(109, 213, 237, 0.06), rgba(33, 147, 176, 0.04));
+        box-shadow: 0 18px 48px rgba(33, 147, 176, 0.28);
+      }
+
+      label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      input[type='text'],
+      textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 15px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      input[type='text']:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(109, 213, 237, 0.12);
+      }
+
+      textarea.output {
+        min-height: 140px;
+        resize: vertical;
+        font-family: 'SFMono-Regular', Consolas, 'Noto Sans Mono', monospace;
+      }
+
+      .note {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 4px 0 10px;
+      }
+
+      .editor-shell {
+        position: relative;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .editor {
+        height: 280px;
+      }
+
+      .fallback {
+        display: none;
+        border: none;
+        border-top: 1px dashed var(--border);
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 0 0 14px 14px;
+      }
+
+      .options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 4px;
+      }
+
+      .option {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        cursor: pointer;
+      }
+
+      .option input {
+        width: 16px;
+        height: 16px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 8px 0 6px;
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+
+      button.primary {
+        background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+        color: #0a0f1f;
+        box-shadow: 0 10px 30px rgba(109, 213, 237, 0.25);
+      }
+
+      button.secondary {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      .output-area {
+        margin-top: 4px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .bookmark-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px dashed var(--accent);
+        background: rgba(109, 213, 237, 0.08);
+      }
+
+      .bookmark-link:hover {
+        background: rgba(109, 213, 237, 0.14);
+      }
+
+      .message {
+        min-height: 24px;
+        font-weight: 600;
+        margin-top: 4px;
+      }
+
+      .message[data-state='success'] {
+        color: var(--success);
+      }
+
+      .message[data-state='error'] {
+        color: var(--error);
+      }
+
+      .message[data-state='info'] {
+        color: var(--muted);
+      }
+
+      .howto {
+        display: grid;
+        gap: 12px;
+      }
+
+      .howto h2 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .pill-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .pill {
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      .two-col {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 14px;
+      }
+
+      @media (max-width: 640px) {
+        .editor {
+          height: 220px;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+
+      .no-js .tab-list {
+        display: none;
+      }
+
+      .no-js .tab-panels {
+        gap: 18px;
+      }
+
+      .no-js .tab-panel {
+        display: grid !important;
+      }
+    </style>
+  </head>
+  <body class="no-js">
+    <main>
+      <header class="hero">
+        <h1>ブックマークレットを素早く生成</h1>
+        <p class="lead">
+          JavaScript を貼り付けてオプションを選ぶだけで、ブックマークバーにドラッグできるリンクと URL を生成します。信頼できるコードだけを使って、安全に共有しましょう。
+        </p>
+      </header>
+
+      <div class="tabs">
+        <div class="tab-shell">
+          <div class="tab-list" role="tablist" aria-label="コンテンツ切り替え">
+            <button id="tab-tools" class="tab" role="tab" aria-selected="true" aria-controls="tools-panel" tabindex="0" data-tab-target="tools">
+              ツール
+            </button>
+            <button id="tab-guide" class="tab" role="tab" aria-selected="false" aria-controls="guide-panel" tabindex="-1" data-tab-target="guide">
+              説明
+            </button>
+          </div>
+
+          <div class="tab-panels">
+            <div
+              id="tools-panel"
+              class="tab-panel"
+              role="tabpanel"
+              aria-labelledby="tab-tools"
+              data-tab-panel="tools"
+              data-active="true"
+            >
+              <div class="panel-surface">
+                <section class="card layout-grid" aria-label="ブックマークレット生成フォーム">
+                  <div>
+                    <label for="name-input">ブックマーク名（任意）</label>
+                    <input
+                      id="name-input"
+                      name="name"
+                      type="text"
+                      placeholder="例: Text Highlighter"
+                      autocomplete="off"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="code-fallback">JavaScript コード</label>
+                    <p class="note">信頼できるコードだけを貼り付けてください。不要な改行はオプションでまとめられます。</p>
+                    <div class="editor-shell" aria-live="polite">
+                      <div id="editor" class="editor" role="presentation"></div>
+                      <textarea
+                        id="code-fallback"
+                        name="code"
+                        class="fallback"
+                        aria-label="JavaScriptコード（テキストエリアのフォールバック）"
+                        spellcheck="false"
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div class="options" aria-label="変換オプション">
+                    <label class="option" for="wrap-iife">
+                      <input id="wrap-iife" type="checkbox" checked />
+                      <span>即時関数でラップする</span>
+                    </label>
+                    <label class="option" for="collapse-lines">
+                      <input id="collapse-lines" type="checkbox" checked />
+                      <span>改行を 1 行にまとめる</span>
+                    </label>
+                  </div>
+
+                  <div class="actions">
+                    <button id="convert-btn" class="primary" type="button">変換する</button>
+                    <button id="copy-btn" class="secondary" type="button">生成結果をコピー</button>
+                  </div>
+
+                  <div class="output-area">
+                    <label for="output">生成された bookmarklet URL</label>
+                    <textarea id="output" class="output" readonly placeholder="javascript:(function(){ ... })();"></textarea>
+                    <a id="bookmark-link" class="bookmark-link" href="#" draggable="true">ブックマークレット</a>
+                    <div id="message" class="message" role="status" aria-live="polite"></div>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <div
+              id="guide-panel"
+              class="tab-panel"
+              role="tabpanel"
+              aria-labelledby="tab-guide"
+              data-tab-panel="guide"
+              data-active="false"
+              hidden
+            >
+              <div class="panel-surface">
+                <section class="howto two-col">
+                  <div class="card pill-list">
+                    <h2>使い方</h2>
+                    <div class="pill">1) コードをエディターに貼り付け、オプションを必要に応じて変更します。</div>
+                    <div class="pill">2) 「変換する」を押して URL とドラッグ用リンクを生成します。</div>
+                    <div class="pill">3) ブラウザのブックマークバーへリンクをドラッグするか、コピーした URL を登録します。</div>
+                    <div class="pill">4) 動作確認し、問題があればコードを修正して再生成します。</div>
+                  </div>
+
+                  <div class="card pill-list">
+                    <h2>スマホ登録のヒント</h2>
+                    <div class="pill">・生成結果をコピーし、ホーム画面に追加するショートカットや共有シートから登録します。</div>
+                    <div class="pill">・iOS Safari: 「共有」→「ブックマーク」→ 編集で URL を貼り替えると登録できます。</div>
+                    <div class="pill">・Android Chrome: ブックマークを作成後、編集画面で URL を bookmarklet に置き換えます。</div>
+                    <div class="pill">・URL が長い場合は IIFE を外したり、コードを圧縮して長さを抑えてください。</div>
+                  </div>
+                </section>
+
+                <section class="howto card pill-list" aria-label="注意事項">
+                  <h2>安全面の注意</h2>
+                  <div class="pill">・必ず信頼できるコードのみを使用してください。未知のコードは個人情報流出の原因になります。</div>
+                  <div class="pill">・生成された URL はプレーンテキストです。公開リポジトリや共有時は内容を確認してください。</div>
+                  <div class="pill">・ブラウザや拡張機能が `javascript:` スキームをブロックする場合があります。</div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src={mainScriptUrl}></script>
+  </body>
+</html>

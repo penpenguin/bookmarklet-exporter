@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <!-- bookmarklet-exporter -->
+  <title id="title">bookmarklet-exporter</title>
+  <desc id="desc">Stylized bookmarklet badge with spark highlight</desc>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6dd5ed" />
+      <stop offset="100%" stop-color="#2193b0" />
+    </linearGradient>
+    <linearGradient id="g-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1228" />
+      <stop offset="100%" stop-color="#0f1a36" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#g-dark)" />
+  <path
+    d="M48 32h26c9 0 16 7 16 16 0 6-3.2 11-8.5 13.8C87 63 92 69 92 77c0 11-9 19-20 19H48Z"
+    fill="url(#g)"
+  />
+  <path
+    d="M61 46h11c4.2 0 7.5 3.4 7.5 7.5S76.2 61 72 61H61Zm0 22h11c5 0 9 3.7 9 8.2 0 4.6-4 8.8-9 8.8H61Z"
+    fill="#0b1020"
+  />
+  <circle cx="92" cy="34" r="9" fill="#f5fdff" />
+  <path d="M92 24v6m0 8v6m6-12h-6m-6 0h-6" stroke="#2193b0" stroke-width="3" stroke-linecap="round" />
+</svg>
