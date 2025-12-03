@@ -83,4 +83,34 @@ describe('index page accessibility', () => {
     const tabPadding = /\.tab\s*\{[^}]*padding:\s*8px\s+14px/s.test(source);
     expect(tabPadding).toBe(true);
   });
+
+  it('sets favicon href to include the base path', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+    const pattern = /<link[^>]*rel="icon"[^>]*href=\{[^}]*faviconUrl[^}]*\}/s;
+    expect(pattern.test(source)).toBe(true);
+
+    const declaresBase = /const\s+base\s*=\s*import\.meta\.env\.BASE_URL/.test(source);
+    expect(declaresBase).toBe(true);
+
+    const trimsBase = /const\s+trimmedBase\s*=\s*base\s*===\s*'\/'\s*\?\s*''\s*:\s*base\.replace\(/.test(
+      source,
+    );
+    expect(trimsBase).toBe(true);
+
+    const buildsHref = /const\s+faviconUrl\s*=\s*`\$\{trimmedBase\}\/favicon\.svg`/.test(source);
+    expect(buildsHref).toBe(true);
+  });
+
+  it('loads the page script via a built JS asset resolved from the module URL (not a raw TypeScript url)', () => {
+    const source = readFileSync('src/pages/index.astro', 'utf-8');
+
+    const includesUrlQuery = /\?url['"]/g.test(source);
+    expect(includesUrlQuery).toBe(false);
+
+    const declaresUrl = /new URL\(['"]\.\.\/scripts\/main\.ts['"],\s*import\.meta\.url\)/.test(source);
+    expect(declaresUrl).toBe(true);
+
+    const scriptUsesUrl = /<script[^>]*type="module"[^>]*src=\{[^}]*mainScriptUrl[^}]*\}[^>]*><\/script>/s.test(source);
+    expect(scriptUsesUrl).toBe(true);
+  });
 });
