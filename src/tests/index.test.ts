@@ -80,17 +80,17 @@ describe('tools page', () => {
   it('loads the compiled client module instead of the raw TypeScript asset', () => {
     const source = readFileSync('src/pages/tools.astro', 'utf-8');
 
-    const avoidsUrlLoader = /import\s+mainScriptUrl\s+from\s+['"]\.\.\/scripts\/main\.ts\?url['"];/.test(source) === false;
+    const avoidsUrlLoader = /\?url/.test(source) === false;
     expect(avoidsUrlLoader).toBe(true);
 
-    const resolvesScriptUrl = /const\s+mainScriptUrl\s*=\s*Astro\.resolve\(\s*['"]\.\.\/scripts\/main\.ts['"]\s*\)/.test(source);
-    expect(resolvesScriptUrl).toBe(true);
+    const declaresBundledPath = /const\s+mainScriptUrl\s*=\s*`\$\{trimmedBase\}\/scripts\/main\.js`/.test(source);
+    expect(declaresBundledPath).toBe(true);
 
     const usesScriptSrc = /<script[^>]*type="module"[^>]*src=\{[^}]*mainScriptUrl[^}]*\}[^>]*><\/script>/s.test(source);
     expect(usesScriptSrc).toBe(true);
 
-    const avoidsPublicAsset = /\/scripts\/main\.js/.test(source) === false;
-    expect(avoidsPublicAsset).toBe(true);
+    const usesBundledJs = /\/scripts\/main\.js/.test(source);
+    expect(usesBundledJs).toBe(true);
   });
 
   it('prefetches the guide page for smoother navigation', () => {

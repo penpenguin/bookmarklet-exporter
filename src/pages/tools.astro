@@ -1,11 +1,11 @@
 ---
 import { siteDescription, siteTitle } from '../lib/siteMeta';
-const mainScriptUrl = Astro.resolve('../scripts/main.ts');
 const base = import.meta.env.BASE_URL ?? '/';
 const trimmedBase = base === '/' ? '' : base.replace(/\/$/, '');
 const faviconUrl = `${trimmedBase}/favicon.svg`;
 const toolsUrl = `${trimmedBase}/tools`;
 const guideUrl = `${trimmedBase}/guide`;
+const mainScriptUrl = `${trimmedBase}/scripts/main.js`;
 ---
 
 <!doctype html>
