@@ -77,11 +77,14 @@ describe('tools page', () => {
     expect(buildsHref).toBe(true);
   });
 
-  it('imports the client script URL from the TypeScript entry via Vite ?url', () => {
+  it('loads the compiled client module instead of the raw TypeScript asset', () => {
     const source = readFileSync('src/pages/tools.astro', 'utf-8');
 
-    const importsScriptUrl = /import\s+mainScriptUrl\s+from\s+['"]\.\.\/scripts\/main\.ts\?url['"];/.test(source);
-    expect(importsScriptUrl).toBe(true);
+    const avoidsUrlLoader = /import\s+mainScriptUrl\s+from\s+['"]\.\.\/scripts\/main\.ts\?url['"];/.test(source) === false;
+    expect(avoidsUrlLoader).toBe(true);
+
+    const resolvesScriptUrl = /const\s+mainScriptUrl\s*=\s*Astro\.resolve\(\s*['"]\.\.\/scripts\/main\.ts['"]\s*\)/.test(source);
+    expect(resolvesScriptUrl).toBe(true);
 
     const usesScriptSrc = /<script[^>]*type="module"[^>]*src=\{[^}]*mainScriptUrl[^}]*\}[^>]*><\/script>/s.test(source);
     expect(usesScriptSrc).toBe(true);
