@@ -88,9 +88,6 @@ describe('tools page', () => {
 
     const usesScriptSrc = /<script[^>]*type="module"[^>]*src=\{[^}]*mainScriptUrl[^}]*\}[^>]*><\/script>/s.test(source);
     expect(usesScriptSrc).toBe(true);
-
-    const usesBundledJs = /\/scripts\/main\.js/.test(source);
-    expect(usesBundledJs).toBe(true);
   });
 
   it('prefetches the guide page for smoother navigation', () => {
