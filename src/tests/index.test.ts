@@ -103,6 +103,9 @@ describe('tools page', () => {
   it('styles scrollbars to look floating while keeping layout stable', () => {
     const source = readFileSync('src/pages/tools.astro', 'utf-8');
 
+    const rootGutter = /html\s*\{[^}]*scrollbar-gutter:\s*stable\s+both-edges[^}]*\}/s.test(source);
+    expect(rootGutter).toBe(true);
+
     const stableGutter = /body\s*\{[^}]*scrollbar-gutter:\s*stable\s+both-edges[^}]*\}/s.test(source);
     expect(stableGutter).toBe(true);
 
@@ -164,6 +167,9 @@ describe('guide page', () => {
 
   it('styles scrollbars to look floating while keeping layout stable', () => {
     const source = readFileSync('src/pages/guide.astro', 'utf-8');
+
+    const rootGutter = /html\s*\{[^}]*scrollbar-gutter:\s*stable\s+both-edges[^}]*\}/s.test(source);
+    expect(rootGutter).toBe(true);
 
     const stableGutter = /body\s*\{[^}]*scrollbar-gutter:\s*stable\s+both-edges[^}]*\}/s.test(source);
     expect(stableGutter).toBe(true);
