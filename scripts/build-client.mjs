@@ -6,6 +6,7 @@ const entry = resolve('src/scripts/main.ts');
 const outDir = resolve('public/scripts');
 const outFile = resolve(outDir, 'main.js');
 const watch = process.argv.includes('--watch');
+const isProd = !watch && process.env.NODE_ENV !== 'development';
 
 await mkdir(outDir, { recursive: true });
 await rm(outFile, { force: true });
@@ -17,7 +18,8 @@ const buildOptions = {
   platform: 'browser',
   target: 'es2019',
   outfile: outFile,
-  sourcemap: process.env.NODE_ENV === 'production' ? false : 'inline',
+  sourcemap: watch ? 'inline' : false,
+  minify: isProd,
   logLevel: 'info',
 };
 
