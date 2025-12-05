@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+.worktrees
+
+# generated client bundle
+public/scripts/*.js
+.worktrees

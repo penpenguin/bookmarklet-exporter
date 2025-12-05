@@ -3,8 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "node scripts/dev-server.mjs",
+    "build": "node scripts/build-client.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
@@ -16,6 +16,7 @@
   "devDependencies": {
     "@types/jsdom": "^21.1.4",
     "@types/node": "^20.17.10",
+    "esbuild": "^0.24.0",
     "jsdom": "^24.1.0",
     "monaco-editor": "^0.55.1",
     "vitest": "^2.1.9"
