@@ -16,7 +16,7 @@ export function generateBookmarklet(
   const { wrapIIFE = true, collapseNewlines = true } = options;
 
   const singleLine = collapseNewlines
-    ? trimmed.replace(/[\r\n]+/g, ' ')
+    ? trimmed.replace(/(?:\r\n|\r|\n)+/g, ' ')
     : trimmed;
 
   const wrapped = wrapIIFE ? `(function(){ ${singleLine} })();` : singleLine;
