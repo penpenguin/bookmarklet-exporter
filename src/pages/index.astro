@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const sampleCode = `const selected = window.getSelection()?.toString();
+if (selected) {
+  alert('選択したテキスト: ' + selected);
+} else {
+  alert('選択範囲がありません');
+}`;
+---
+
+<BaseLayout title="Bookmarklet Exporter" description="Export bookmarklets as drag links and javascript: URLs">
+  <bookmarklet-studio data-name="ブックマークレット" data-code={encodeURIComponent(sampleCode)}></bookmarklet-studio>
+  {(() => {
+    const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+    const scriptUrl = `${base}scripts/main.js`;
+    return <script type="module" src={scriptUrl}></script>;
+  })()}
+</BaseLayout>

@@ -26,5 +26,5 @@ pnpm-debug.log*
 .worktrees
 
 # generated client bundle
-public/scripts/*.js
+public/scripts/
 .worktrees
