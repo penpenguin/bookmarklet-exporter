@@ -1,4 +1,18 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
+
+vi.mock('@monaco/bootstrap', () => {
+  const mountMonaco = vi.fn(
+    async (_host: HTMLElement, initial: string, _onChange: (v: string) => void) => ({
+      dispose: vi.fn(),
+      format: vi.fn(),
+      getValue: () => initial,
+      setValue: vi.fn(),
+    }),
+  );
+  return { mountMonaco };
+});
+
+import { mountMonaco } from '@monaco/bootstrap';
 import './studio';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
@@ -13,6 +27,7 @@ describe('bookmarklet-studio component', () => {
   it('generates javascript: URL and drag link', async () => {
     const el = document.createElement('bookmarklet-studio');
     document.body.appendChild(el);
+    await flush();
 
     const codeField = el.querySelector<HTMLTextAreaElement>('[data-field="code"]');
     const convertBtn = el.querySelector<HTMLButtonElement>('[data-action="convert"]');
@@ -90,5 +105,12 @@ describe('bookmarklet-studio component', () => {
 
     el.querySelector<HTMLButtonElement>('[data-action="copy"]')!.click();
     expect(writeText).toHaveBeenCalled();
+  });
+
+  it('enables monaco automatically on mount', async () => {
+    const el = document.createElement('bookmarklet-studio');
+    document.body.appendChild(el);
+    await flush();
+    expect(mountMonaco).toHaveBeenCalled();
   });
 });

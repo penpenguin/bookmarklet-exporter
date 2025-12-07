@@ -19,6 +19,8 @@ export class SnippetEditor extends HTMLElement {
     } else {
       this.render();
     }
+    // 表示と同時に Monaco を試行（失敗しても textarea フォールバック）
+    void this.enableMonaco();
   }
 
   disconnectedCallback() {
@@ -33,7 +35,6 @@ export class SnippetEditor extends HTMLElement {
         <textarea data-field="code" class="editor-fallback" spellcheck="false" aria-label="JavaScript コード">${initial}</textarea>
         <div class="editor-actions">
           <button type="button" data-action="format">整形</button>
-          <button type="button" data-action="enhance">Monaco を有効化</button>
         </div>
       </div>
     `;
@@ -46,7 +47,6 @@ export class SnippetEditor extends HTMLElement {
     this.textarea = this.querySelector('[data-field="code"]') as HTMLTextAreaElement;
     this.textarea?.addEventListener('input', () => this.emitChange());
     this.querySelector('[data-action="format"]')?.addEventListener('click', () => this.format());
-    this.querySelector('[data-action="enhance"]')?.addEventListener('click', () => this.enableMonaco());
   }
 
   get value() {
@@ -77,12 +77,19 @@ export class SnippetEditor extends HTMLElement {
 
   private async enableMonaco() {
     if (this.monacoController) return;
-    this.monacoMount.hidden = false;
-    this.textarea.style.display = 'none';
-    this.monacoController = await mountMonaco(this.monacoMount, this.value, (val) => {
-      this.textarea.value = val;
-      this.emitChange();
-    });
+    try {
+      this.monacoMount.hidden = false;
+      this.textarea.style.display = 'none';
+      this.monacoController = await mountMonaco(this.monacoMount, this.value, (val) => {
+        this.textarea.value = val;
+        this.emitChange();
+      });
+      this.textarea.style.display = 'none';
+    } catch (error) {
+      console.warn('Monaco failed to load, falling back to textarea', error);
+      this.monacoMount.hidden = true;
+      this.textarea.style.display = '';
+    }
   }
 
   private async format() {
