@@ -28,7 +28,7 @@ export class SnippetEditor extends HTMLElement {
   }
 
   private render() {
-    const initial = this.dataset.code ?? '';
+    const initial = this.dataset.code ? decodeURIComponent(this.dataset.code) : '';
     this.innerHTML = `
       <div class="editor-shell">
         <div class="monaco-host" hidden></div>
