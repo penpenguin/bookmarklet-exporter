@@ -26,6 +26,7 @@ export async function mountMonaco(
     language: 'javascript',
     automaticLayout: true,
     minimap: { enabled: false },
+    theme: 'vs-dark',
   });
 
   const subscription = editor.onDidChangeModelContent(() => {
