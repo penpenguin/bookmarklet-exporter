@@ -12,6 +12,12 @@ const { title = 'Bookmarklet Exporter', description = 'Bookmarklets to share as 
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {(() => {
+      const base = import.meta.env.BASE_URL.endsWith('/')
+        ? import.meta.env.BASE_URL
+        : `${import.meta.env.BASE_URL}/`;
+      return <link rel="stylesheet" href={`${base}scripts/main.css`} />;
+    })()}
   </head>
   <body class="page no-js">
     <main>
