@@ -158,11 +158,27 @@ snippet-editor,
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
-.editor-actions {
+.editor-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #ffffff05;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.toolbar-actions {
   display: flex;
   gap: 8px;
-  padding: 10px 12px;
-  border-top: 1px solid var(--border);
 }
 
 .monaco-host {
@@ -177,10 +193,26 @@ snippet-editor,
 }
 
 .option {
-  display: flex;
+  display: inline-flex;
   gap: 8px;
   align-items: center;
   color: var(--muted);
+  background: #ffffff08;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.option.select select {
+  background: #0f162f;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.option.check input {
+  accent-color: var(--accent);
 }
 
 .actions {
@@ -208,6 +240,11 @@ button.primary {
 button.secondary {
   background: #ffffff0f;
   color: var(--text);
+  border-color: var(--border);
+}
+
+.ghost {
+  background: #ffffff08;
   border-color: var(--border);
 }
 

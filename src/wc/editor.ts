@@ -33,9 +33,6 @@ export class SnippetEditor extends HTMLElement {
       <div class="editor-shell">
         <div class="monaco-host" hidden></div>
         <textarea data-field="code" class="editor-fallback" spellcheck="false" aria-label="JavaScript コード">${initial}</textarea>
-        <div class="editor-actions">
-          <button type="button" data-action="format">整形</button>
-        </div>
       </div>
     `;
     this.cache();
@@ -46,7 +43,6 @@ export class SnippetEditor extends HTMLElement {
     this.monacoMount = this.querySelector('.monaco-host') as HTMLDivElement;
     this.textarea = this.querySelector('[data-field="code"]') as HTMLTextAreaElement;
     this.textarea?.addEventListener('input', () => this.emitChange());
-    this.querySelector('[data-action="format"]')?.addEventListener('click', () => this.format());
   }
 
   get value() {
@@ -92,7 +88,7 @@ export class SnippetEditor extends HTMLElement {
     }
   }
 
-  private async format() {
+  async formatCode() {
     if (this.monacoController) {
       await this.monacoController.format();
       this.emitChange();

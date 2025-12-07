@@ -93,33 +93,38 @@ export class BookmarkletStudio extends HTMLElement {
                   <snippet-editor data-field="editor" data-code="${encodeURIComponent(initialCode)}"></snippet-editor>
                 </div>
 
-                <div class="options" aria-label="変換オプション">
-                  <label class="option">
-                    wrap:
-                    <select data-field="wrap">
-                      <option value="none">なし</option>
-                      <option value="iife" selected>IIFE</option>
-                      <option value="async">async IIFE</option>
-                    </select>
-                  </label>
-                  <label class="option">
-                    minify:
-                    <select data-field="minify">
-                      <option value="none">なし</option>
-                      <option value="simple" selected>簡易</option>
-                      <option value="terser">terser</option>
-                    </select>
-                  </label>
-                  <label class="option">
-                    encode:
-                    <select data-field="encode">
-                      <option value="minimal" selected>軽量</option>
-                      <option value="component">encodeURIComponent</option>
-                    </select>
-                  </label>
-                  <label class="option">
-                    <input type="checkbox" data-field="collapse" checked> 改行を 1 行にまとめる
-                  </label>
+                <div class="editor-toolbar" aria-label="変換オプションと整形">
+                  <div class="option-row">
+                    <label class="option select">
+                      wrap
+                      <select data-field="wrap">
+                        <option value="none">なし</option>
+                        <option value="iife" selected>IIFE</option>
+                        <option value="async">async IIFE</option>
+                      </select>
+                    </label>
+                    <label class="option select">
+                      minify
+                      <select data-field="minify">
+                        <option value="none">なし</option>
+                        <option value="simple" selected>簡易</option>
+                        <option value="terser">terser</option>
+                      </select>
+                    </label>
+                    <label class="option select">
+                      encode
+                      <select data-field="encode">
+                        <option value="minimal" selected>軽量</option>
+                        <option value="component">encodeURIComponent</option>
+                      </select>
+                    </label>
+                    <label class="option check">
+                      <input type="checkbox" data-field="collapse" checked> 改行を 1 行にまとめる
+                    </label>
+                  </div>
+                  <div class="toolbar-actions">
+                    <button type="button" data-action="format" class="secondary ghost">整形</button>
+                  </div>
                 </div>
 
                 <div class="actions">
@@ -178,6 +183,7 @@ export class BookmarkletStudio extends HTMLElement {
     this.addEventListener('editor-change', () => this.scheduleSave());
     this.querySelector('[data-action="convert"]')?.addEventListener('click', () => this.handleConvert());
     this.querySelector('[data-action="copy"]')?.addEventListener('click', () => this.handleCopy());
+    this.querySelector('[data-action="format"]')?.addEventListener('click', () => this.editor.formatCode());
     this.tabButtons.forEach((btn) => {
       btn.addEventListener('click', () => this.setActiveTab(btn.dataset.tab as Tab, true));
       btn.addEventListener('keydown', (event) => this.handleTabKeydown(event, btn));
