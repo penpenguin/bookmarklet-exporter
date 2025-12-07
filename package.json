@@ -7,6 +7,7 @@
     "build": "node scripts/build-client.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "lint": "astro check",
     "test": "vitest run",
     "test:watch": "vitest watch"
   },
@@ -14,11 +15,14 @@
     "astro": "^5.16.4"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.6",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^24.10.1",
     "esbuild": "^0.25.9",
     "jsdom": "^27.2.0",
     "monaco-editor": "^0.55.1",
+    "terser": "^5.36.0",
+    "typescript": "^5.9.3",
     "vitest": "^4.0.15"
   }
 }
